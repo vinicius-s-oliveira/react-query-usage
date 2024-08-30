@@ -1,33 +1,15 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { StyleSheet, SafeAreaView } from "react-native";
-
+import { useQuery } from "@tanstack/react-query";
+import React from "react";
+import { SafeAreaView, StyleSheet } from "react-native";
 import Animated from "react-native-reanimated";
 
-export interface UserList {
-  id: number;
-  name: string;
-  avatar: string;
-}
+import { fetchUsers } from "@/api";
 
 export default function HomeScreen() {
-  const [userList, setUserList] = useState<UserList[]>();
-
-  useEffect(() => {
-    axios
-      .get("https://66d0d61d181d059277dfde9c.mockapi.io/react-query-list/users")
-      .then((response) => {
-        const users = response.data as UserList[];
-        setUserList(users);
-        console.log(
-          "users:",
-          users.map((user) => user.name)
-        );
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
+  const { data, isLoading } = useQuery({
+    queryKey: ["userList"],
+    queryFn: fetchUsers,
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -36,9 +18,9 @@ export default function HomeScreen() {
       </Animated.View>
 
       <Animated.View style={styles.bodyContainer}>
-        {userList && (
+        {data && (
           <Animated.FlatList
-            data={userList}
+            data={data}
             renderItem={({ item }) => {
               return (
                 <Animated.View key={item.id} style={styles.userContainer}>
@@ -58,6 +40,10 @@ export default function HomeScreen() {
               );
             }}
           />
+        )}
+
+        {isLoading && (
+          <Animated.Text style={styles.nameText}>Loading ...</Animated.Text>
         )}
       </Animated.View>
     </SafeAreaView>
