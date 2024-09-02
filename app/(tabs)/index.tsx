@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
 import Animated from "react-native-reanimated";
 
 import { fetchUsers } from "@/api";
@@ -24,17 +24,25 @@ export default function HomeScreen() {
             renderItem={({ item }) => {
               return (
                 <Animated.View key={item.id} style={styles.userContainer}>
-                  <Animated.View>
-                    <Animated.Image
-                      source={{ uri: `${item.avatar}` }}
-                      style={styles.image}
-                    />
-                  </Animated.View>
+                  <Animated.View style={styles.userCard}>
+                    <Animated.View style={styles.userAvatar}>
+                      <Animated.Image
+                        source={{ uri: `${item.avatar}` }}
+                        style={styles.image}
+                      />
+                    </Animated.View>
 
-                  <Animated.View style={styles.nameContainer}>
-                    <Animated.Text style={styles.nameText}>
-                      {item.name}
-                    </Animated.Text>
+                    <Animated.View style={styles.nameContainer}>
+                      <Animated.Text style={styles.nameText}>
+                        {item.name}
+                      </Animated.Text>
+
+                      <TouchableOpacity style={styles.editButton}>
+                        <Animated.Text style={styles.editButtonText}>
+                          Editar
+                        </Animated.Text>
+                      </TouchableOpacity>
+                    </Animated.View>
                   </Animated.View>
                 </Animated.View>
               );
@@ -65,12 +73,35 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   userContainer: {
-    justifyContent: "flex-start",
+    justifyContent: "center",
     flexDirection: "row",
     width: "100%",
-    paddingTop: 12,
-    paddingBottom: 12,
-    paddingLeft: 24,
+    marginBottom: 12,
+  },
+  userCard: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+    width: "90%",
+    padding: 12,
+    borderRadius: 10,
+    borderColor: "gray",
+    borderWidth: 2,
+  },
+  userAvatar: {},
+  editButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 92,
+    height: 26,
+    color: "white",
+    backgroundColor: "#3182ce",
+    borderRadius: 4,
+  },
+  editButtonText: {
+    color: "white",
+    fontWeight: "600",
+    fontSize: 12,
+    textTransform: "uppercase",
   },
   title: {
     fontWeight: "700",
@@ -86,6 +117,8 @@ const styles = StyleSheet.create({
   },
   nameContainer: {
     justifyContent: "center",
+    alignItems: "flex-end",
+    flexDirection: "column",
     marginLeft: 12,
   },
   image: {
